@@ -1,0 +1,60 @@
+version: '3'
+services:
+    postgres:
+        container_name: postgres
+        image: postgres
+        extra_hosts: [ 'host.docker.internal:host-gateway' ]
+        restart: always
+        environment:
+            POSTGRES_DB: testdb
+            # POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: password
+        volumes:
+            - ./config/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+            - ./local-data:/var/lib/postgresql/data
+        ports:
+            - 5432:5432
+
+    redis:
+        image: redis:6.0.9
+        ports:
+            - '127.0.0.1:6379:6379'
+        healthcheck:
+            test: [ 'CMD', 'redis-cli', 'ping' ]
+        restart: ${DOCTOLIB_RESTART_CONTAINERS:-unless-stopped}
+
+    zookeeper:
+        container_name: zookeeper
+        image: wurstmeister/zookeeper
+        extra_hosts: [ 'host.docker.internal:host-gateway' ]
+        restart: always
+        ports:
+            - 2181:2181
+        environment:
+            KAFKA_ADVERTISED_HOST_NAME: zookeeper
+    kafka:
+        container_name: kafka
+        image: wurstmeister/kafka
+        extra_hosts: [ 'host.docker.internal:host-gateway' ]
+        restart: always
+        ports:
+            - 9092:9092
+        environment:
+            KAFKA_LISTENERS: "INTERNAL://:9093,EXTERNAL://:9092"
+            KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka:9093,EXTERNAL://localhost:9092"
+            KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT"
+            KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+        depends_on:
+            - zookeeper
+    kafdrop:
+        container_name: kafdrop
+        image: obsidiandynamics/kafdrop
+        extra_hosts: [ 'host.docker.internal:host-gateway' ]
+        restart: always
+        ports:
+            - 9000:9000
+        environment:
+            KAFKA_BROKERCONNECT: kafka:9093
+        depends_on:
+            - kafka

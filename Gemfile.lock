@@ -1,0 +1,46 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activemodel (7.0.4.3)
+      activesupport (= 7.0.4.3)
+    activerecord (7.0.4.3)
+      activemodel (= 7.0.4.3)
+      activesupport (= 7.0.4.3)
+    activesupport (7.0.4.3)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 1.6, < 2)
+      minitest (>= 5.1)
+      tzinfo (~> 2.0)
+    concurrent-ruby (1.2.2)
+    connection_pool (2.4.0)
+    ffi (1.15.5)
+    i18n (1.12.0)
+      concurrent-ruby (~> 1.0)
+    logger (1.5.3)
+    mini_portile2 (2.8.1)
+    minitest (5.18.0)
+    pg (1.4.6)
+    rake (13.0.6)
+    rdkafka (0.12.0)
+      ffi (~> 1.15)
+      mini_portile2 (~> 2.6)
+      rake (> 12)
+    redis (5.0.6)
+      redis-client (>= 0.9.0)
+    redis-client (0.14.1)
+      connection_pool
+    tzinfo (2.0.6)
+      concurrent-ruby (~> 1.0)
+
+PLATFORMS
+  arm64-darwin-22
+
+DEPENDENCIES
+  activerecord (~> 7.0)
+  logger (~> 1.5)
+  pg (~> 1.4)
+  rdkafka (~> 0.12.0)
+  redis (~> 5.0)
+
+BUNDLED WITH
+   2.4.10
